@@ -1,0 +1,39 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sdo: <https://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+
+<https://w3id.org/profile/>
+    a dcat:Catalog ;
+    dcterms:title "W3ID Profiles Catalog"@en ;
+    dcterms:description """A DCAT catalogue of Profiles.
+
+Profiles in this catalogue are all described using the Data Catalogue Vocabulary (DCAT) and the Profiles Vocabulary (PROF). They all conform to the DCAT Valication Target Profiles, which is in the catalogue also, and PROF.
+
+All profiles contain validating resources which means instance data can be validated as to whether it conforms with them or not.
+
+This catalogue is persistently identified using a W3ID URI and presents as a Linked Data API delivering HTML pages for people to read and RDF data for the catalogue as a whole also conforms to the DCAT VTarget Profile - see the dcterms:conformsTo property for the catalogue which claims such conformance."""@en ;
+    dcterms:created "2020-07-01"^^xsd:date ;
+    dcterms:creator <https://orcid.org/0000-0002-8742-7730> ;
+    dcterms:modified "2020-07-02"^^xsd:date ;
+    dcterms:publisher <https://orcid.org/0000-0002-8742-7730> ;
+    # dcat:dataset :dataset-001  , :dataset-002 , :dataset-003 ;
+    dcterms:dcterms:conformsTo <https://w3id.org/profile/dcat-vtarget>
+  .
+
+
+<https://orcid.org/0000-0002-8742-7730>
+    a sdo:Person ;
+    sdo:name "Nicholas J. Car" ;
+    sdo:affiliation <https://linked.data.gov.au/org/agldwg> ;
+    sdo:email <mailto:nicholas.car@surroundaustralia.com> ;
+    sdo:jobTitle "Co-Chair" ;
+.
+
+<https://surroundaustralia.com>
+    a sdo:Organization ;
+    sdo:name "SURROUND Australia Pty Ltd" ;
+    sdo:url <https://surroundaustralia.com> ;
+.
