@@ -7,14 +7,12 @@ APP_DIR = dirname(dirname(realpath(__file__)))
 PROFILES_DIR = join(APP_DIR, "profiles")
 
 
-def validate_profile(profile_folder_path):
-    pass
-
-
-def validate_profiles(profiles_folder_path=PROFILES_DIR):
-    # call validate_profile() per profile
-    # generate some sort of log
-    pass
+profile_uris = [
+    "https://w3id.org/profile/vocpub",
+    "https://linked.data.gov.au/def/loci-dp",
+    "https://w3id.org/profile/ogcldapi",
+    "",
+]
 
 
 if __name__ == "__main__":

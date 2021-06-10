@@ -9,11 +9,11 @@ Each of the profiles in this catalogue are described using the [Profiles Vocabul
 So, each profile must look like this:
 
 *  `PROFILE_FOLDER`
-    * `profile.ttl`
+    * `PROFILE_FILE.ttl`
     * *other profile file x*
     * *other profile file y*
 
-The name of the `PROFILE_FOLDER` doesn't really matter - it's noly used to separate profile content for management - but should be reconisable as a short code for the profile. 
+The actual name of `PROFILE_FOLDER` & `PROFILE_FILE` is based on the profile's ID, as assigned by ProfCat (i.e. it's not something the profile sets), but it's usually obvious what it is - the profile acronym or last segment of its URI. It's only used to separate profile content for management - but should be reconisable as a short code for the profile. 
 
 
 
@@ -28,6 +28,6 @@ If you want to be in contact with the developers outside the GitHub or SURROUND 
 
 **Lead Developer**  
 Dr Nicholas Car  
-*Data Systems Architect*  
+_Data Systems Architect_  
 <nicholas.car@surroundaustralia.com>  
 github: nicholascar  
