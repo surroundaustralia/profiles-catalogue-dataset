@@ -10,7 +10,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     dcterms:title "W3ID Profiles Catalog"@en ;
     dcterms:description """A DCAT catalogue of Profiles.
 
-Profiles in this catalogue are all described using the Data Catalogue Vocabulary (DCAT) and the Profiles Vocabulary (PROF). They all conform to the DCAT Valication Target Profiles, which is in the catalogue also, and PROF.
+Profiles in this catalogue are all described using the Profiles Vocabulary (PROF) and also catalogued in a standard way using the using the Data Catalogue Vocabulary (DCAT).
 
 All profiles contain validating resources which means instance data can be validated as to whether it conforms with them or not.
 
