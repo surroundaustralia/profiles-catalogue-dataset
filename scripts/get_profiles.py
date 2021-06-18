@@ -103,6 +103,7 @@ def make_dcat_items(successful_retrievals):
     for p in successful_retrievals:
         id = profile_uris[p]["id"]
         g.parse(items_folder / id / f"{id}.ttl")
+    g.parse(system_folder / "catalogue.ttl")
     q = """
         CONSTRUCT {
             ?p a dcat:Resource .
@@ -113,8 +114,13 @@ def make_dcat_items(successful_retrievals):
                dcat:accessURL ?access_uri ;
                dcterms:format ?f ;
                dcterms:conformsTo ?ct .
+               
+            ?c dcterms:hasPart ?p .
+            ?p dcterms:isPartOf ?c .
         }
         WHERE {
+            ?c a dcat:Catalog .
+        
             ?p  a prof:Profile .
 
             OPTIONAL {
@@ -139,6 +145,14 @@ def make_dcat_items(successful_retrievals):
 
 
 if __name__ == "__main__":
-    successful_retrievals = get_profile_rdf()
-    get_profile_validators(successful_retrievals)
+    # successful_retrievals = get_profile_rdf()
+    # get_profile_validators(successful_retrievals)
+    successful_retrievals = [
+        "https://linked.data.gov.au/def/agop",
+        "https://linked.data.gov.au/def/fsdf/dp",
+        "https://linked.data.gov.au/def/loci-dp",
+        "https://w3id.org/profile/ogcldapi",
+        "https://w3id.org/profile/profcat",
+        "https://w3id.org/profile/vocpub"
+    ]
     make_dcat_items(successful_retrievals)
