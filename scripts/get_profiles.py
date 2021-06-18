@@ -1,5 +1,9 @@
 from pathlib import Path
+import sys
+import glob
 import httpx
+import os
+import requests
 from rdflib import Graph, Namespace, URIRef
 from rdflib.namespace import DCAT, DCTERMS, PROF
 
@@ -32,8 +36,13 @@ namespaces = {
     "role": Namespace("http://www.w3.org/ns/dx/prof/role/")
 }
 
+data_folder = Path(__file__).parent.parent / "data"
 items_folder = Path(__file__).parent.parent / "data" / "items"
 system_folder = Path(__file__).parent.parent / "data" / "system"
+
+proxies = {
+    "https://": f"https://github.com/",
+}
 
 
 def _bind_namespaces(g: Graph, namespaces: dict) -> None:
@@ -45,10 +54,11 @@ def get_profile_rdf():
     print("Getting profiles' RDF:")
     successful_retrievals = []
     for k, v in profile_uris.items():
-        r = httpx.get(k, headers={"Accept": "text/turtle"})
+        print(k)
+        r = requests.get(k, headers={"Accept": "text/turtle"})
         if 200 <= r.status_code < 300:
             Path(items_folder / f"{v['id']}").mkdir(parents=True, exist_ok=True)
-            open(items_folder / f"{v['id']}" / f"{v['id']}.ttl", "w").write(r.text)
+            open(items_folder / f"{v['id']}" / f"{v['id']}.ttl", "wb").write(r.content)
             print(f"got {v['id']}")
             successful_retrievals.append(k)
         else:
@@ -68,7 +78,7 @@ def get_profile_validators(successful_retrievals):
     for p in successful_retrievals:
         id = profile_uris[p]["id"]
         print(f"Getting validators for {id}")
-        g = Graph().parse(items_folder / id / f"{id}.ttl")
+        g = Graph().parse(items_folder / id / f"{id}.ttl", format="ttl")
         q = """
             SELECT ?a ?f
             WHERE {
@@ -82,7 +92,7 @@ def get_profile_validators(successful_retrievals):
         g2 = Graph()
         try:
             for res in g.query(q, initNs=namespaces):
-                r = httpx.get(res["a"], headers={"Accept": "text/turtle"})
+                r = requests.get(res["a"], headers={"Accept": "text/turtle"})
                 if 200 <= r.status_code < 300:
                     g2.parse(data=r.text, format="turtle")
                 else:
@@ -144,6 +154,32 @@ def make_dcat_items(successful_retrievals):
     open(system_folder / "items.ttl", "w").write(x.serialize(format="ttl").decode())
 
 
+def push_data(endpoint, username, password):
+
+    if endpoint is None:
+        raise ValueError("You must set the SPARQL_ENDPOINT!")
+
+    print(f"Loading data into {endpoint}")
+    print(data_folder)
+    # load all turtle files in ./items/* & ./system/*
+    for f in glob.glob(f"{data_folder}/**/*.ttl", recursive=True):
+        r = httpx.post(
+            endpoint,
+            params={"graph": "https://original.com"},
+            headers={"Content-Type": "text/turtle"},
+            content=open(f, "rb").read(),
+            auth=(username, password)
+        )
+        if 200 <= r.status_code < 300:
+            print("ok")
+        else:
+            print(r.status_code)
+            print(r.text)
+
+    print("Done")
+    return
+
+
 if __name__ == "__main__":
     # successful_retrievals = get_profile_rdf()
     # get_profile_validators(successful_retrievals)
@@ -156,3 +192,11 @@ if __name__ == "__main__":
         "https://w3id.org/profile/vocpub"
     ]
     make_dcat_items(successful_retrievals)
+
+    SPARQL_ENDPOINT = sys.argv[1] if len(sys.argv) > 1 else os.getenv("SPARQL_ENDPOINT")
+    SPARQL_USERNAME = sys.argv[1] if len(sys.argv) > 1 else os.getenv("SPARQL_USERNAME")
+    SPARQL_PASSWORD = sys.argv[1] if len(sys.argv) > 1 else os.getenv("SPARQL_PASSWORD")
+
+    push_data(endpoint=SPARQL_ENDPOINT,
+              username=SPARQL_USERNAME,
+              password=SPARQL_PASSWORD)
